@@ -1,0 +1,39 @@
+from board import pin_cfg
+import time
+import utime
+import random
+from machine import Pin
+from button import button 
+import ws2812b
+from oled import oled
+
+T1 = 0
+T2 = 0
+action_T = 0
+
+def k1_callback(pin):
+    global T1
+    print('k1 is run')
+    T2 = time.ticks_ms()
+    action_T = T2 - T1
+    print(T1)
+    print(T2)
+    print(action_T)
+    oled.fill(0)
+    oled.show()
+    oled.text(str(action_T)+"ms",32,0)
+    oled.show()
+
+    pass
+
+k1 = button(pin_cfg.k1,k1_callback,trigger=Pin.IRQ_FALLING)
+
+while True:
+    rt = random.randint(2,5) ##生成随机数
+    time.sleep(rt)
+    r = Pin(pin_cfg.blue_led, Pin.OUT)
+    r.on()
+    T1 = time.ticks_ms()       ##灯亮开始计时
+    time.sleep(5)
+    r.off()
+
